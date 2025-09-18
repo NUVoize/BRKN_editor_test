@@ -1,0 +1,47 @@
+:: 1) Clean old meta + manifest
+cmd /V:ON /C "del /q E:\n8n-docker\data\meta\*.json 2>nul & del /q E:\n8n-docker\videos_out\manifest.json 2>nul"
+
+:: 2) Regenerate meta for whatever is in videos_in now (change 2.0 if needed)
+cmd /V:ON /C ""py" -3 "E:\n8n-docker\scripts\make_meta_from_videos.py" "E:\n8n-docker\videos_in" "E:\n8n-docker\data\meta" 2.0 --force"
+
+:: 3) Build the new manifest
+cmd /V:ON /C ""py" -3 "E:\n8n-docker\scripts\sequence_and_assemble_verbose.py" "E:\n8n-docker\data\meta" "E:\n8n-docker\videos_out""
+
+:: 4) Stitch
+cmd /V:ON /C ""py" -3 "E:\n8n-docker\scripts\stitch_from_manifest.py" "E:\n8n-docker\videos_out""
+
+
+
+# Clean metadata
+del E:\n8n_docker_strick\data\meta\*.json
+
+# Clean manifests
+del E:\n8n_docker_strick\videos_out\*.json
+
+# Clean output videos (optional)
+del E:\n8n_docker_strick\videos_out\*.mp4
+
+
+
+
+
+good one: 
+
+
+:: 1) Clean old meta + manifest
+cmd /V:ON /C "del /q E:\n8n-docker\data\meta\*.json 2>nul & del /q E:\n8n-docker\videos_out\manifest.json 2>nul & del /q E:\n8n-docker\videos_out\smart_manifest.json 2>nul"
+
+:: 2) AI analyze each clip (replaces make_meta_from_videos.py)
+echo Starting AI analysis of clips...
+for %%f in (E:\n8n-docker\videos_in\*.mp4) do (
+    echo Analyzing %%~nxf
+    cmd /V:ON /C ""py" -3 "E:\n8n-docker\scripts\analyze_clip.py" "%%f""
+)
+
+:: 3) Smart sequencing (NEW - creates optimized order)
+echo Creating smart sequence...
+cmd /V:ON /C ""py" -3 "E:\n8n-docker\scripts\smart_sequence_clips.py" "E:\n8n-docker\data\meta" "E:\n8n-docker\videos_out""
+
+:: 4) Smart stitch (uses AI-optimized manifest)
+echo Stitching with smart transitions...
+cmd /V:ON /C ""py" -3 "E:\n8n-docker\scripts\stitch_from_manifest.py" "E:\n8n-docker\videos_out""

@@ -1,0 +1,3 @@
+python ai_video_editor.py E:\n8n_docker_strick\data\meta E:\n8n_docker_strick\videos_in E:\n8n-docker\videos_out
+
+

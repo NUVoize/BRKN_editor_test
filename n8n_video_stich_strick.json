@@ -1,0 +1,182 @@
+{
+  "name": "good",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "639861a2-c32f-499c-95f4-90e198c1d55d",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1920,
+        256
+      ]
+    },
+    {
+      "parameters": {
+        "command": "powershell -NoProfile -Command \"Get-ChildItem -LiteralPath 'E:\\n8n-docker\\videos_in' -Filter *.mp4 -File | Select-Object -ExpandProperty FullName | ConvertTo-Json -Compress\""
+      },
+      "id": "45dbf7fc-071d-423d-9c47-c8825ca035f4",
+      "name": "List Files",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        -1680,
+        256
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  item.json.myNewField = 1;\n}\n\nreturn $input.all();"
+      },
+      "id": "50b12b87-74e3-40f6-a614-486ae9a79699",
+      "name": "To Items",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1440,
+        256
+      ]
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "options": {}
+      },
+      "id": "f7de303f-4391-4e61-ab99-39e859f7ccb3",
+      "name": "Loop Each File",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 2,
+      "position": [
+        -1200,
+        256
+      ]
+    },
+    {
+      "parameters": {
+        "command": "\n\n"
+      },
+      "id": "55a1bc58-801a-4c76-8f1e-76d6cf3d162b",
+      "name": "Analyze Clip (python)",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        -960,
+        256
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{$node[\"Loop Each File\"].context[\"noItemsLeft\"]}}",
+              "operation": "isTrue"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "273e8adf-ed06-434b-94f6-70b4dff119c8",
+      "name": "Last Item?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -720,
+        256
+      ]
+    },
+    {
+      "parameters": {
+        "command": "=cmd /V:ON /C \"\"py\" -3 \"E:\\n8n-docker\\scripts\\sequence_and_assemble_verbose.py\" \"E:\\n8n-docker\\data\\meta\" \"E:\\n8n-docker\\videos_out\"\"\n\n"
+      },
+      "id": "78b76968-dcbb-4d62-8dab-9eb2f419421e",
+      "name": "Sequence + Assemble",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        -480,
+        192
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "List Files",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "List Files": {
+      "main": [
+        [
+          {
+            "node": "To Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "To Items": {
+      "main": [
+        [
+          {
+            "node": "Loop Each File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Each File": {
+      "main": [
+        [
+          {
+            "node": "Analyze Clip (python)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze Clip (python)": {
+      "main": [
+        [
+          {
+            "node": "Last Item?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Last Item?": {
+      "main": [
+        [
+          {
+            "node": "Sequence + Assemble",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "ced50cb4-0c1a-4473-9560-4ef008eb994d",
+  "meta": {
+    "instanceId": "486046e86efd9f5291789dde80729188704f92fe7e28ab4bfc2b680a27ad655a"
+  },
+  "id": "yd8Xn6vWv4VXFPR1",
+  "tags": []
+}

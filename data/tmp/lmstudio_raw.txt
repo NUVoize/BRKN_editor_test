@@ -1,0 +1,9 @@
+{
+"subject": "A woman in a white tank top with her legs spread open",
+"action": "Posing for a photo",
+"motion": "Still",
+"lighting": "Natural light",
+"tone": "Neutral",
+"scene_type": "Intimate",
+"dominant_colors": ["White", "Beige", "Brown"]
+}

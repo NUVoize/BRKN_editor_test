@@ -1,0 +1,37 @@
+{
+  "name": "narm — Join Clips (re-encode 30fps)",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "1",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [260, 300]
+    },
+    {
+      "parameters": {
+        "command": "powershell -NoProfile -ExecutionPolicy Bypass -Command \"mkdir 'E:\\n8n_docker_strick\\videos_out' -Force | Out-Null; Get-ChildItem 'E:\\n8n_docker_strick\\videos_in' -File | Where-Object { $_.Extension -match '^\\.(mp4|mov|mkv|m4v|avi)$' } | Sort-Object FullName | ForEach-Object { \\\"file '\\\" + ( ($_.FullName -replace '\\\\\\\\','/') -replace '\\'' , '\\'\\'' ) + \\\"'\\\" } | Set-Content 'E:\\n8n_docker_strick\\videos_out\\concat.txt' -Encoding utf8\""
+      },
+      "id": "2",
+      "name": "Build concat.txt",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 2,
+      "position": [560, 300]
+    },
+    {
+      "parameters": {
+        "command": "ffmpeg -y -f concat -safe 0 -i \"E:\\n8n_docker_strick\\videos_out\\concat.txt\" -fflags +genpts -vf fps=30 -c:v libx264 -preset veryfast -crf 18 -pix_fmt yuv420p -movflags +faststart -c:a aac -b:a 192k \"E:\\n8n_docker_strick\\videos_out\\joined_final.mp4\""
+      },
+      "id": "3",
+      "name": "Stitch (re-encode)",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 2,
+      "position": [860, 300]
+    }
+  ],
+  "connections": {
+    "Manual Trigger": { "main": [ [ { "node": "Build concat.txt", "type": "main", "index": 0 } ] ] },
+    "Build concat.txt": { "main": [ [ { "node": "Stitch (re-encode)", "type": "main", "index": 0 } ] ] }
+  }
+}

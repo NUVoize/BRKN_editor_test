@@ -1,0 +1,13 @@
+start up thr n8n: npx n8n
+
+
+
+$env:LMSTUDIO_MODEL="llama3-llava-next-8b:2"
+$env:LMSTUDIO_URL="http://localhost:1234/v1/chat/completions"
+$env:META_DIR="E:\n8n-docker\data\meta"
+$env:TMP_DIR="E:\n8n-docker\data\tmp"
+
+
+
+test: 
+python "E:\n8n-docker\scripts\analyze_clip.py" "E:\n8n-docker\videos_in\AnimateDiff_00070.mp4"

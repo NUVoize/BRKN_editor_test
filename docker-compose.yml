@@ -1,0 +1,22 @@
+﻿services:
+  n8n:
+    container_name: n8n
+    image: n8nio/n8n:latest
+    restart: always
+    ports:
+      - "5678:5678"
+    environment:
+      GENERIC_TIMEZONE: "America/Toronto"
+      N8N_BASIC_AUTH_ACTIVE: "true"
+      N8N_BASIC_AUTH_USER: "admin"
+      N8N_BASIC_AUTH_PASSWORD: "admin"
+      N8N_HOST: "localhost"
+      N8N_PORT: "5678"
+      N8N_PROTOCOL: "http"
+    volumes:
+      - "E:/n8n-docker/data/.n8n:/home/node/.n8n"
+      - "E:/n8n-docker/scripts:/data/scripts"
+      - "E:/n8n-docker/videos_in:/data/videos_in"
+      - "E:/n8n-docker/videos_out:/data/videos_out"
+      - "E:/n8n-docker/data/meta:/data/meta"
+      - "E:/n8n-docker/data/tmp:/data/tmp"

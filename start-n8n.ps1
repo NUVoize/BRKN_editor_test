@@ -1,0 +1,5 @@
+$env:N8N_BASIC_AUTH_ACTIVE="true"
+$env:N8N_BASIC_AUTH_USER="admin"
+$env:N8N_BASIC_AUTH_PASSWORD="admin"
+n8n
+
